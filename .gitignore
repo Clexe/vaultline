@@ -1,0 +1,18 @@
+# Foundry
+contracts/cache/
+contracts/out/
+contracts/broadcast/
+
+# Node / Next.js
+node_modules/
+web/.next/
+web/out/
+
+# Env
+.env
+.env.local
+*.local
+
+# OS
+.DS_Store
+Thumbs.db
