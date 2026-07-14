@@ -19,8 +19,9 @@ export function SiteNav() {
         <div className="flex items-center gap-4 sm:gap-8">
           <Link
             href="/"
-            className="font-mono text-sm font-bold uppercase tracking-[0.1em] sm:tracking-[0.25em]"
+            className="font-heading text-sm font-bold uppercase tracking-[0.1em] sm:tracking-[0.25em]"
           >
+            <span aria-hidden className="mr-1.5 text-primary">▮</span>
             Vaultline
           </Link>
           <nav className="flex items-center gap-3 sm:gap-5">

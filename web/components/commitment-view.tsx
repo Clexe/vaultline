@@ -225,7 +225,7 @@ export function CommitmentView({
                     unsettledMiss && "border border-red-700/70 text-red-400",
                     isFuture && "bg-muted/40 text-muted-foreground",
                     isToday && status === DayStatus.Unreported && "bg-muted/60",
-                    isToday && "ring-2 ring-foreground/70"
+                    isToday && "ring-2 ring-primary"
                   )}
                 >
                   {i + 1}
