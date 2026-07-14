@@ -34,7 +34,7 @@ export function hashRules(rules: TradingRules): `0x${string}` {
   return keccak256(toBytes(canonicalRulesJson(rules)));
 }
 
-const storageKey = (address: string) => `vaultline:rules:${address.toLowerCase()}`;
+export const storageKey = (address: string) => `vaultline:rules:${address.toLowerCase()}`;
 
 export function saveRules(address: string, rules: TradingRules): void {
   localStorage.setItem(storageKey(address), canonicalRulesJson(rules));

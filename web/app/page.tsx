@@ -46,7 +46,7 @@ export default function CreatePage() {
 
   const [copied, setCopied] = useState(false);
 
-  const { data: existing } = useReadContract({
+  const { data: existing, refetch: refetchExisting } = useReadContract({
     ...vaultContract,
     functionName: "getCommitment",
     args: address ? [address] : undefined,
@@ -80,6 +80,13 @@ export default function CreatePage() {
     if (txHash && address) saveRules(address, rules);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [txHash]);
+
+  // Refresh the active-commitment read once creation confirms, so the form
+  // locks itself instead of inviting a doomed second submit.
+  useEffect(() => {
+    if (isSuccess) refetchExisting();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccess]);
 
   const durationNum = Number(duration);
   const slashNum = Number(slashPct);

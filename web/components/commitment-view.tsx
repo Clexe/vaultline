@@ -3,7 +3,9 @@
 import { useEffect, useState } from "react";
 import { formatEther } from "viem";
 import {
+  useAccount,
   useReadContracts,
+  useSwitchChain,
   useWaitForTransactionReceipt,
   useWriteContract,
 } from "wagmi";
@@ -41,7 +43,10 @@ import {
 function fmtMon(wei: bigint): string {
   const s = formatEther(wei);
   const [int, frac] = s.split(".");
-  return frac ? `${int}.${frac.slice(0, 4)}` : int;
+  const out = frac ? `${int}.${frac.slice(0, 4)}` : int;
+  // Nonzero dust must not display as zero.
+  if (wei > 0n && Number(out) === 0) return "<0.0001";
+  return out;
 }
 
 function dayLabel(epochDay: bigint): string {
@@ -59,6 +64,19 @@ export function CommitmentView({
   showRulesHash?: boolean;
 }) {
   const [violateOpen, setViolateOpen] = useState(false);
+  const { chainId } = useAccount();
+  const { switchChain } = useSwitchChain();
+  const wrongChain = interactive && chainId !== undefined && chainId !== CHAIN.id;
+
+  // Wall-clock seconds, kept out of render (react-hooks/purity) and refreshed
+  // so the withdraw button appears without a manual reload.
+  const [nowSec, setNowSec] = useState(0);
+  useEffect(() => {
+    const update = () => setNowSec(Math.floor(Date.now() / 1000));
+    update();
+    const id = setInterval(update, 30_000);
+    return () => clearInterval(id);
+  }, []);
 
   const { data, isLoading, isError, refetch } = useReadContracts({
     contracts: [
@@ -128,7 +146,7 @@ export function CommitmentView({
   const reportedToday = BigInt(commitment.lastReportedDay) >= today;
   const canReport = commitment.active && !periodOver && !reportedToday;
   const canWithdraw =
-    commitment.active && BigInt(Math.floor(Date.now() / 1000)) >= unlockTimestampOf(commitment);
+    commitment.active && nowSec > 0 && BigInt(nowSec) >= unlockTimestampOf(commitment);
 
   const settlement = simulateMissedSettlement(commitment, today);
   const violationSlash = previewSlash(settlement.stakeAfter, commitment.slashBps);
@@ -246,7 +264,16 @@ export function CommitmentView({
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
-            {canReport && (
+            {wrongChain && (
+              <Button
+                variant="destructive"
+                className="w-full"
+                onClick={() => switchChain({ chainId: CHAIN.id })}
+              >
+                Wrong network — switch to Monad Testnet
+              </Button>
+            )}
+            {!wrongChain && canReport && (
               <div className="flex gap-3">
                 <Button
                   className="flex-1 bg-emerald-700 text-emerald-50 hover:bg-emerald-600"
@@ -266,7 +293,7 @@ export function CommitmentView({
               </div>
             )}
 
-            {canWithdraw && (
+            {!wrongChain && canWithdraw && (
               <Button
                 className="w-full"
                 size="lg"
