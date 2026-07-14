@@ -150,7 +150,7 @@ export default function CreatePage() {
       </div>
 
       {hasActive && (
-        <Card className="border-amber-900/50">
+        <Card className="border-accent-text/40">
           <CardContent className="flex items-center justify-between py-4">
             <p className="text-sm">You already have an active commitment.</p>
             <Button asChild size="sm" variant="outline">
@@ -327,7 +327,7 @@ export default function CreatePage() {
             </p>
           )}
           {isSuccess && (
-            <p className="text-sm text-emerald-500">
+            <p className="text-sm text-compliant">
               Commitment created.{" "}
               <Link className="underline" href="/dashboard">
                 Go to your dashboard →
@@ -336,7 +336,8 @@ export default function CreatePage() {
           )}
 
           <Button
-            className="w-full"
+            variant="outline"
+            className="w-full border-primary font-mono text-xs uppercase tracking-[0.1em] text-accent-text hover:bg-primary/10"
             size="lg"
             disabled={!isConnected || chainId !== CHAIN.id || hasActive || !inputsValid || isPending || isConfirming}
             onClick={submit}

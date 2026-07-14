@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Roboto_Mono, Schibsted_Grotesk } from "next/font/google";
+import { Geist, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import { SiteNav } from "@/components/site-nav";
@@ -9,16 +9,12 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-// Monad's brand technical font — all data, labels, hashes, buttons.
+// Monad's brand technical font, doubling as the display face — the terminal
+// register IS the design (see design.md · Typography).
 const robotoMono = Roboto_Mono({
   variable: "--font-roboto-mono",
   subsets: ["latin"],
-});
-
-// Display grotesk for page titles and the wordmark.
-const schibsted = Schibsted_Grotesk({
-  variable: "--font-schibsted",
-  subsets: ["latin"],
+  weight: ["400", "500", "700"],
 });
 
 export const metadata: Metadata = {
@@ -35,14 +31,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`dark ${geistSans.variable} ${robotoMono.variable} ${schibsted.variable} h-full antialiased`}
+      className={`dark ${geistSans.variable} ${robotoMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <Providers>
           <SiteNav />
           <main className="relative mx-auto w-full max-w-5xl flex-1 px-4 py-8">{children}</main>
-          <footer className="border-t border-border/60 py-4">
-            <p className="mx-auto max-w-5xl px-4 font-mono text-xs text-muted-foreground">
+          <footer className="py-6">
+            <p className="mx-auto max-w-5xl px-4 font-mono text-xs tracking-[0.08em] text-muted-foreground">
               vaultline · self-reported by design · your word, your stake
             </p>
           </footer>

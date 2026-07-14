@@ -172,15 +172,35 @@ export function CommitmentView({
 
   return (
     <div className="space-y-6">
-      {/* Stat cards */}
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-        {stats.map(([label, value]) => (
-          <Card key={label} className="py-4">
-            <CardContent className="px-4">
-              <p className="text-xs uppercase tracking-wide text-muted-foreground">{label}</p>
-              <p className="mt-1 font-mono text-xl font-semibold">{value}</p>
-            </CardContent>
-          </Card>
+      {/* Statement hero — public page only: the streak IS the story. */}
+      {!interactive && (
+        <div className="py-2">
+          <p className="font-mono text-[clamp(3.5rem,10vw,5.5rem)] font-bold leading-none tracking-[-0.02em]">
+            {commitment.streak}
+            <span className="ml-3 text-lg font-medium tracking-[0.08em] text-muted-foreground">
+              day streak
+            </span>
+          </p>
+        </div>
+      )}
+
+      {/* Position blotter — one panel, rule-separated cells, tabular figures. */}
+      <div className="grid grid-cols-2 rounded-md bg-card md:grid-cols-4">
+        {stats.map(([label, value], i) => (
+          <div
+            key={label}
+            className={cn(
+              "px-4 py-4",
+              i > 0 && "md:border-l md:border-border/60",
+              i % 2 === 1 && "border-l border-border/60 md:border-l",
+              i > 1 && "border-t border-border/60 md:border-t-0"
+            )}
+          >
+            <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+              {label}
+            </p>
+            <p className="mt-1.5 font-mono text-xl font-bold">{value}</p>
+          </div>
         ))}
       </div>
 
@@ -219,10 +239,10 @@ export function CommitmentView({
                   }`}
                   className={cn(
                     "flex aspect-square items-center justify-center rounded-sm font-mono text-[10px]",
-                    status === DayStatus.Compliant && "bg-emerald-600/80 text-emerald-50",
+                    status === DayStatus.Compliant && "bg-compliant text-background",
                     (status === DayStatus.Violated || status === DayStatus.Missed) &&
-                      "bg-red-800/80 text-red-100",
-                    unsettledMiss && "border border-red-700/70 text-red-400",
+                      "bg-violated text-background",
+                    unsettledMiss && "border border-violated/70 text-violated",
                     isFuture && "bg-muted/40 text-muted-foreground",
                     isToday && status === DayStatus.Unreported && "bg-muted/60",
                     isToday && "ring-2 ring-primary"
@@ -234,9 +254,9 @@ export function CommitmentView({
             })}
           </div>
           <div className="mt-3 flex flex-wrap gap-4 font-mono text-[11px] text-muted-foreground">
-            <span><span className="mr-1 inline-block h-2 w-2 rounded-sm bg-emerald-600/80" />compliant</span>
-            <span><span className="mr-1 inline-block h-2 w-2 rounded-sm bg-red-800/80" />violated / missed</span>
-            <span><span className="mr-1 inline-block h-2 w-2 rounded-sm border border-red-700/70" />missed, unsettled</span>
+            <span><span className="mr-1 inline-block h-2 w-2 rounded-sm bg-compliant" />compliant</span>
+            <span><span className="mr-1 inline-block h-2 w-2 rounded-sm bg-violated" />violated / missed</span>
+            <span><span className="mr-1 inline-block h-2 w-2 rounded-sm border border-violated/70" />missed, unsettled</span>
             <span><span className="mr-1 inline-block h-2 w-2 rounded-sm bg-muted/40" />upcoming</span>
           </div>
         </CardContent>
@@ -274,17 +294,16 @@ export function CommitmentView({
               </Button>
             )}
             {!wrongChain && canReport && (
-              <div className="flex gap-3">
+              <div className="flex flex-col gap-3 sm:flex-row">
                 <Button
-                  className="flex-1 bg-emerald-700 text-emerald-50 hover:bg-emerald-600"
+                  className="flex-1 bg-compliant font-mono text-xs uppercase tracking-[0.1em] text-background hover:bg-compliant/85"
                   disabled={isPending || isConfirming}
                   onClick={() => send("reportDay", [true])}
                 >
-                  Compliant — I followed my rules
+                  Compliant — rules held
                 </Button>
                 <Button
-                  variant="destructive"
-                  className="flex-1"
+                  className="flex-1 bg-violated font-mono text-xs uppercase tracking-[0.1em] text-background hover:bg-violated/85"
                   disabled={isPending || isConfirming}
                   onClick={() => setViolateOpen(true)}
                 >
@@ -295,7 +314,8 @@ export function CommitmentView({
 
             {!wrongChain && canWithdraw && (
               <Button
-                className="w-full"
+                variant="outline"
+                className="w-full border-primary font-mono text-xs uppercase tracking-[0.1em] text-accent-text hover:bg-primary/10"
                 size="lg"
                 disabled={isPending || isConfirming}
                 onClick={() => send("withdraw")}
@@ -321,7 +341,7 @@ export function CommitmentView({
                 {isPending ? "Confirm in wallet…" : "Waiting for confirmation…"}
               </p>
             )}
-            {isSuccess && <p className="text-sm text-emerald-500">Transaction confirmed.</p>}
+            {isSuccess && <p className="text-sm text-compliant">Transaction confirmed.</p>}
             {isReverted && (
               <p className="text-sm text-destructive">
                 Transaction reverted onchain — no state was changed.

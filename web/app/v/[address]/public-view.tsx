@@ -7,8 +7,7 @@ export function PublicVaultView({ address }: { address: `0x${string}` }) {
   return (
     <div className="space-y-6">
       <div>
-        {/* Lighter purple than --primary: small text needs >=4.5:1 on the navy. */}
-        <p className="font-mono text-xs uppercase tracking-[0.25em] text-[#a594ff]">
+        <p className="font-mono text-xs uppercase tracking-[0.25em] text-accent-text">
           public commitment record
         </p>
         <h1 className="mt-1 text-2xl font-semibold tracking-tight">

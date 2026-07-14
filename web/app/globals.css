@@ -1,3 +1,9 @@
+/* Hallmark · genre: atmospheric · macrostructure: Workbench (app) / Statement-led (public) · design-system: design.md · designed-as-app
+ * theme: custom · vibe: "late-night trading terminal, Monad-native, austere"
+ * paper: oklch(15.5% 0.045 290) · accent: oklch(55.7% 0.213 284)
+ * display: Roboto Mono 700 · body: Geist · axes: dark / mono / cool
+ * studied: no · context: user-provided · nav: N9 edge-aligned · footer: Ft2 inline
+ */
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
@@ -9,7 +15,10 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-roboto-mono);
-  --font-heading: var(--font-schibsted);
+  --font-heading: var(--font-roboto-mono);
+  --color-compliant: var(--compliant);
+  --color-violated: var(--violated);
+  --color-accent-text: var(--accent-text);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -84,26 +93,29 @@
 }
 
 .dark {
-  /* Monad brand: navy #0E091C canvas, purple #6E54FF as the only interactive
-     accent, lavender-greys derived from light purple #DDD7FE. */
-  --background: #0e091c;
-  --foreground: #f2efff;
-  --card: #161029;
-  --card-foreground: #f2efff;
-  --popover: #1a1330;
-  --popover-foreground: #f2efff;
-  --primary: #6e54ff;
-  --primary-foreground: #ffffff;
-  --secondary: #221a3e;
-  --secondary-foreground: #ddd7fe;
-  --muted: #1d1636;
-  --muted-foreground: #9b93bc;
-  --accent: #2a2150;
-  --accent-foreground: #ddd7fe;
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: rgba(158, 140, 255, 0.16);
-  --input: rgba(158, 140, 255, 0.22);
-  --ring: #6e54ff;
+  /* Night Desk — see design.md. All OKLCH, purple-anchored (Monad brand:
+     navy #0E091C = paper, purple #6E54FF = accent, kept to ≤5% of any view). */
+  --background: oklch(0.155 0.045 290);
+  --foreground: oklch(0.94 0.015 290);
+  --card: oklch(0.19 0.045 290);
+  --card-foreground: oklch(0.94 0.015 290);
+  --popover: oklch(0.21 0.045 290);
+  --popover-foreground: oklch(0.94 0.015 290);
+  --primary: oklch(0.557 0.213 284);
+  --primary-foreground: oklch(0.97 0.01 290);
+  --secondary: oklch(0.23 0.045 290);
+  --secondary-foreground: oklch(0.86 0.02 290);
+  --muted: oklch(0.21 0.04 290);
+  --muted-foreground: oklch(0.68 0.03 290);
+  --accent: oklch(0.23 0.05 288);
+  --accent-foreground: oklch(0.86 0.02 290);
+  --destructive: oklch(0.55 0.19 25);
+  --border: oklch(0.3 0.05 290);
+  --input: oklch(0.33 0.05 290);
+  --ring: oklch(0.557 0.213 284);
+  --compliant: oklch(0.65 0.13 155);
+  --violated: oklch(0.55 0.19 25);
+  --accent-text: oklch(0.72 0.15 285);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -131,10 +143,33 @@
   }
   h1,
   h2 {
-    @apply font-heading;
+    @apply font-heading font-bold;
+    letter-spacing: -0.02em;
   }
-  /* Faint ambient glow anchored to the top of the viewport — atmosphere,
-     not decoration. Sits behind everything and never intercepts input. */
+  /* Data never uses proportional figures. */
+  main {
+    font-variant-numeric: tabular-nums;
+  }
+  /* One orchestrated entrance per page load — opacity only, then the page
+     settles. Nothing animates on scroll. */
+  main {
+    animation: nightdesk-enter 350ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes nightdesk-enter {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    main {
+      animation: none;
+    }
+  }
+  /* The single ambient bloom the atmospheric genre allows — fixed, unanimated,
+     behind everything, never intercepting input. */
   body::before {
     content: "";
     position: fixed;
@@ -143,7 +178,7 @@
     z-index: 0;
     background: radial-gradient(
       55% 38% at 50% 0%,
-      rgba(110, 84, 255, 0.09),
+      oklch(0.557 0.213 284 / 0.08),
       transparent 72%
     );
   }
