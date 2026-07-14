@@ -58,3 +58,22 @@ export function previewSlash(stakeRemaining: bigint, slashBps: number): bigint {
 export function shortAddress(addr: string): string {
   return `${addr.slice(0, 6)}…${addr.slice(-4)}`;
 }
+
+/**
+ * Client-side replay of the contract's missed-day settlement, so the UI can
+ * show exactly what a report or withdrawal will cost before signing.
+ */
+export function simulateMissedSettlement(
+  c: Commitment,
+  today: bigint
+): { missedDays: number; stakeAfter: bigint } {
+  const endDay = endDayOf(c);
+  const upTo = today > endDay ? endDay : today - 1n;
+  let stake = c.stakeRemaining;
+  let missed = 0;
+  for (let d = BigInt(c.lastReportedDay) + 1n; d <= upTo && stake > 0n; d++) {
+    stake -= previewSlash(stake, c.slashBps);
+    missed++;
+  }
+  return { missedDays: missed, stakeAfter: stake };
+}
