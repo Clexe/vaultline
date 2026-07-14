@@ -21,3 +21,37 @@
 ## Monad Mainnet (chain id 143)
 
 _Not yet deployed — planned for Day 4 with the `vaultline-deployer` keystore._
+
+### Day-4 mainnet runbook (run from `contracts/`, funded commands are yours)
+
+```bash
+# 0. One-time: import your deployer key into a named Foundry keystore (prompts locally)
+cast wallet import vaultline-deployer --interactive
+
+# 1. Check funding (deploy cost on testnet was ~0.11 MON; keep margin)
+cast balance $(cast wallet address --account vaultline-deployer) --rpc-url monad_mainnet
+
+# 2. Deploy (prompts for keystore password)
+forge create src/AccountabilityVault.sol:AccountabilityVault \
+  --rpc-url monad_mainnet \
+  --account vaultline-deployer \
+  --broadcast
+
+# 3. Verify (unfunded — Claude can run this given the address)
+forge verify-contract <MAINNET_ADDR> src/AccountabilityVault.sol:AccountabilityVault \
+  --chain 143 \
+  --verifier sourcify \
+  --verifier-url "https://sourcify-api-monad.blockvision.org/"
+
+# 4. Sanity checks
+cast code <MAINNET_ADDR> --rpc-url monad_mainnet | head -c 20
+cast call <MAINNET_ADDR> "MAX_SLASH_BPS()(uint16)" --rpc-url monad_mainnet
+```
+
+Post-deploy checklist (Claude does these given the address):
+
+1. `web/lib/vault.ts` — set `VAULT_ADDRESS` to the mainnet address and switch
+   `monadTestnet` → `monad` (both `wagmi/chains` imports, here and in `lib/wagmi.ts`).
+2. `.monskills` — change `chain=monad-testnet` to `chain=monad`.
+3. This file + README — record address, tx hash, verification status.
+4. `cd web && npx next build` — confirm clean build, then commit.
