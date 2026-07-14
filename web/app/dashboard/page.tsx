@@ -33,7 +33,7 @@ export default function DashboardPage() {
       <div className="flex items-end justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Your commitment</h1>
-          <p className="mt-1 font-mono text-xs text-muted-foreground">{address}</p>
+          <p className="mt-1 break-all font-mono text-xs text-muted-foreground">{address}</p>
         </div>
         <Button asChild size="sm" variant="outline">
           <Link href={`/v/${address}`}>Public page →</Link>

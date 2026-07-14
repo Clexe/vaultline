@@ -15,12 +15,15 @@ export function SiteNav() {
 
   return (
     <header className="border-b border-border/60">
-      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
-        <div className="flex items-center gap-8">
-          <Link href="/" className="font-mono text-sm font-bold tracking-[0.25em] uppercase">
+      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-3 sm:px-4">
+        <div className="flex items-center gap-4 sm:gap-8">
+          <Link
+            href="/"
+            className="font-mono text-sm font-bold uppercase tracking-[0.1em] sm:tracking-[0.25em]"
+          >
             Vaultline
           </Link>
-          <nav className="flex items-center gap-5">
+          <nav className="flex items-center gap-3 sm:gap-5">
             {links.map((l) => (
               <Link
                 key={l.href}

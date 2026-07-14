@@ -6,19 +6,37 @@ import { CHAIN, shortAddress } from "@/lib/vault";
 
 export function WalletButton() {
   const { address, isConnected, chainId } = useAccount();
-  const { connect, connectors, isPending } = useConnect();
+  const { connect, connectors, isPending, error } = useConnect();
   const { disconnect } = useDisconnect();
   const { switchChain } = useSwitchChain();
 
   if (!isConnected) {
+    // Wagmi's typed error union omits it, but the injected connector throws
+    // ProviderNotFoundError at runtime when no extension is installed.
+    const noProvider = !!error && /provider not found/i.test(error.message);
     return (
-      <Button
-        size="sm"
-        onClick={() => connect({ connector: connectors[0] })}
-        disabled={isPending || connectors.length === 0}
-      >
-        {isPending ? "Connecting…" : "Connect Wallet"}
-      </Button>
+      <div className="flex items-center gap-2">
+        {noProvider && (
+          <span className="hidden text-xs text-destructive sm:inline">
+            No wallet extension found
+          </span>
+        )}
+        <Button
+          size="sm"
+          title={noProvider ? "No wallet extension found" : undefined}
+          onClick={() => connect({ connector: connectors[0] })}
+          disabled={isPending || connectors.length === 0}
+        >
+          {isPending ? (
+            "Connecting…"
+          ) : (
+            <>
+              <span className="sm:hidden">{noProvider ? "No wallet" : "Connect"}</span>
+              <span className="hidden sm:inline">Connect Wallet</span>
+            </>
+          )}
+        </Button>
+      </div>
     );
   }
 

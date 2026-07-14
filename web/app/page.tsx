@@ -24,6 +24,7 @@ import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { BURN_ADDRESS, CHAIN, vaultContract, type Commitment } from "@/lib/vault";
 import { canonicalRulesJson, hashRules, saveRules, type TradingRules } from "@/lib/rules";
+import { friendlyError } from "@/lib/errors";
 
 export default function CreatePage() {
   const { address, isConnected, chainId } = useAccount();
@@ -79,30 +80,41 @@ export default function CreatePage() {
 
   const durationNum = Number(duration);
   const slashNum = Number(slashPct);
+  const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
+  // Plain decimal only — parseEther throws on scientific notation like "1e19".
+  const stakeValid = /^\d+(\.\d+)?$/.test(stake.trim()) && Number(stake) > 0;
   const inputsValid =
-    Number(stake) > 0 &&
+    stakeValid &&
     durationNum >= 1 &&
     durationNum <= 90 &&
     Number.isInteger(durationNum) &&
     slashNum > 0 &&
     slashNum <= 50 &&
-    /^0x[0-9a-fA-F]{40}$/.test(beneficiary);
+    /^0x[0-9a-fA-F]{40}$/.test(beneficiary) &&
+    beneficiary.toLowerCase() !== ZERO_ADDRESS;
+
+  const [localError, setLocalError] = useState<string | null>(null);
 
   function submit() {
     if (!inputsValid) return;
+    setLocalError(null);
     reset();
-    writeContract({
-      ...vaultContract,
-      functionName: "createCommitment",
-      args: [
-        rulesHash,
-        durationNum,
-        Math.round(slashNum * 100), // percent -> bps
-        beneficiary as `0x${string}`,
-      ],
-      value: parseEther(stake),
-      chainId: CHAIN.id,
-    });
+    try {
+      writeContract({
+        ...vaultContract,
+        functionName: "createCommitment",
+        args: [
+          rulesHash,
+          durationNum,
+          Math.round(slashNum * 100), // percent -> bps
+          beneficiary as `0x${string}`,
+        ],
+        value: parseEther(stake.trim()),
+        chainId: CHAIN.id,
+      });
+    } catch (e) {
+      setLocalError(friendlyError(e));
+    }
   }
 
   async function copyRules() {
@@ -286,9 +298,9 @@ export default function CreatePage() {
             </p>
           </div>
 
-          {writeError && (
-            <p className="break-all text-sm text-destructive">
-              {writeError.message.split("\n")[0]}
+          {(writeError || localError) && (
+            <p className="text-sm text-destructive">
+              {localError ?? friendlyError(writeError)}
             </p>
           )}
           {isSuccess && (

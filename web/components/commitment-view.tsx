@@ -23,7 +23,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { friendlyError } from "@/lib/errors";
 import {
   CHAIN,
   DayStatus,
@@ -90,9 +92,14 @@ export function CommitmentView({
   const hasCommitment = commitment.durationDays > 0;
   if (!hasCommitment) {
     return (
-      <p className="py-16 text-center text-sm text-muted-foreground">
-        No commitment found for this address.
-      </p>
+      <div className="space-y-4 py-16 text-center">
+        <p className="text-sm text-muted-foreground">No commitment found for this address.</p>
+        {interactive && (
+          <Button asChild variant="outline" size="sm">
+            <Link href="/">Create your commitment →</Link>
+          </Button>
+        )}
+      </div>
     );
   }
 
@@ -253,6 +260,16 @@ export function CommitmentView({
               </Button>
             )}
 
+            {periodOver && !canWithdraw && (
+              <p className="text-sm text-muted-foreground">
+                All {commitment.durationDays} days are complete. Withdrawal unlocks at{" "}
+                <span className="font-mono text-foreground">
+                  {new Date(Number(unlockTimestampOf(commitment)) * 1000).toUTCString()}
+                </span>
+                .
+              </p>
+            )}
+
             {(isPending || isConfirming) && (
               <p className="text-sm text-muted-foreground">
                 {isPending ? "Confirm in wallet…" : "Waiting for confirmation…"}
@@ -260,9 +277,7 @@ export function CommitmentView({
             )}
             {isSuccess && <p className="text-sm text-emerald-500">Transaction confirmed.</p>}
             {writeError && (
-              <p className="break-all text-sm text-destructive">
-                {writeError.message.split("\n")[0]}
-              </p>
+              <p className="text-sm text-destructive">{friendlyError(writeError)}</p>
             )}
           </CardContent>
         </Card>
