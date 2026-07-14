@@ -50,9 +50,11 @@ function dayLabel(epochDay: bigint): string {
 export function CommitmentView({
   address,
   interactive,
+  showRulesHash = false,
 }: {
   address: `0x${string}`;
   interactive: boolean;
+  showRulesHash?: boolean;
 }) {
   const [violateOpen, setViolateOpen] = useState(false);
 
@@ -195,6 +197,12 @@ export function CommitmentView({
           </div>
         </CardContent>
       </Card>
+
+      {showRulesHash && (
+        <p className="break-all font-mono text-xs text-muted-foreground">
+          rules hash: {commitment.rulesHash}
+        </p>
+      )}
 
       {/* Actions */}
       {interactive && commitment.active && (
