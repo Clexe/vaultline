@@ -60,7 +60,7 @@ export function CommitmentView({
 }) {
   const [violateOpen, setViolateOpen] = useState(false);
 
-  const { data, isLoading, refetch } = useReadContracts({
+  const { data, isLoading, isError, refetch } = useReadContracts({
     contracts: [
       { ...vaultContract, functionName: "getCommitment", args: [address] },
       { ...vaultContract, functionName: "getDayStatuses", args: [address] },
@@ -74,10 +74,13 @@ export function CommitmentView({
   const today = data?.[2]?.result as bigint | undefined;
 
   const { writeContract, data: txHash, isPending, error: writeError, reset } = useWriteContract();
-  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
+  const { data: receipt, isLoading: isConfirming } = useWaitForTransactionReceipt({
     hash: txHash,
     query: { enabled: !!txHash },
   });
+  // A fetched receipt is not success — the tx may have reverted onchain.
+  const isSuccess = receipt?.status === "success";
+  const isReverted = receipt?.status === "reverted";
 
   // Refresh reads once a tx confirms.
   useEffect(() => {
@@ -85,8 +88,24 @@ export function CommitmentView({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccess]);
 
-  if (isLoading || !commitment || today === undefined) {
+  if (isLoading) {
     return <p className="py-16 text-center text-sm text-muted-foreground">Loading commitment…</p>;
+  }
+
+  // Reads finished but produced nothing usable: the RPC is unreachable or a
+  // call failed (allowFailure leaves isError false for per-call failures).
+  if (isError || !commitment || today === undefined) {
+    return (
+      <div className="space-y-4 py-16 text-center">
+        <p className="text-sm text-destructive">
+          Couldn&apos;t reach the Monad testnet RPC. The chain state shown here may be
+          unavailable right now.
+        </p>
+        <Button size="sm" variant="outline" onClick={() => refetch()}>
+          Retry
+        </Button>
+      </div>
+    );
   }
 
   const hasCommitment = commitment.durationDays > 0;
@@ -276,6 +295,11 @@ export function CommitmentView({
               </p>
             )}
             {isSuccess && <p className="text-sm text-emerald-500">Transaction confirmed.</p>}
+            {isReverted && (
+              <p className="text-sm text-destructive">
+                Transaction reverted onchain — no state was changed.
+              </p>
+            )}
             {writeError && (
               <p className="text-sm text-destructive">{friendlyError(writeError)}</p>
             )}

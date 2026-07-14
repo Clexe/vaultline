@@ -70,7 +70,10 @@ export default function CreatePage() {
   const rulesHash = useMemo(() => hashRules(rules), [rules]);
 
   const { writeContract, data: txHash, isPending, error: writeError, reset } = useWriteContract();
-  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({ hash: txHash });
+  const { data: receipt, isLoading: isConfirming } = useWaitForTransactionReceipt({ hash: txHash });
+  // A fetched receipt is not success — the tx may have reverted onchain.
+  const isSuccess = receipt?.status === "success";
+  const isReverted = receipt?.status === "reverted";
 
   // Persist the plaintext rules the moment the tx is sent, keyed by address.
   useEffect(() => {
@@ -83,15 +86,20 @@ export default function CreatePage() {
   const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
   // Plain decimal only — parseEther throws on scientific notation like "1e19".
   const stakeValid = /^\d+(\.\d+)?$/.test(stake.trim()) && Number(stake) > 0;
-  const inputsValid =
-    stakeValid &&
-    durationNum >= 1 &&
-    durationNum <= 90 &&
-    Number.isInteger(durationNum) &&
-    slashNum > 0 &&
-    slashNum <= 50 &&
-    /^0x[0-9a-fA-F]{40}$/.test(beneficiary) &&
-    beneficiary.toLowerCase() !== ZERO_ADDRESS;
+  const durationValid = durationNum >= 1 && durationNum <= 90 && Number.isInteger(durationNum);
+  const slashValid = slashNum > 0 && slashNum <= 50;
+  const beneficiaryValid =
+    /^0x[0-9a-fA-F]{40}$/.test(beneficiary) && beneficiary.toLowerCase() !== ZERO_ADDRESS;
+  const inputsValid = stakeValid && durationValid && slashValid && beneficiaryValid;
+  const validationHint = !stakeValid
+    ? "Stake must be a positive decimal number of MON."
+    : !durationValid
+      ? "Duration must be a whole number between 1 and 90 days."
+      : !slashValid
+        ? "Slash must be between 1% and 50%."
+        : !beneficiaryValid
+          ? "Beneficiary must be a valid, non-zero address."
+          : null;
 
   const [localError, setLocalError] = useState<string | null>(null);
 
@@ -298,9 +306,17 @@ export default function CreatePage() {
             </p>
           </div>
 
+          {validationHint && (
+            <p className="text-sm text-muted-foreground">{validationHint}</p>
+          )}
           {(writeError || localError) && (
             <p className="text-sm text-destructive">
               {localError ?? friendlyError(writeError)}
+            </p>
+          )}
+          {isReverted && (
+            <p className="text-sm text-destructive">
+              Transaction reverted onchain — no commitment was created.
             </p>
           )}
           {isSuccess && (
