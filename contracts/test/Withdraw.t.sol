@@ -27,7 +27,8 @@ contract WithdrawTest is VaultTestBase {
         assertEq(beneficiary.balance, 0);
         assertEq(address(vault).balance, 0);
         assertFalse(_get().active);
-        assertEq(_get().stakeRemaining, 0);
+        // stakeRemaining is preserved as history after withdrawal.
+        assertEq(_get().stakeRemaining, STAKE);
     }
 
     function test_RevertWhen_WithdrawEarly() public {

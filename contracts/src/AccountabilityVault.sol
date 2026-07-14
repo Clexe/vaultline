@@ -39,9 +39,16 @@ contract AccountabilityVault is ReentrancyGuard {
         MissedDay
     }
 
+    /// @dev Per-day status codes packed 2 bits per day into `dayStatuses`,
+    ///      indexed by (day - startDay). 0 = unreported (pending or future).
+    uint192 private constant STATUS_COMPLIANT = 1;
+    uint192 private constant STATUS_VIOLATED = 2;
+    uint192 private constant STATUS_MISSED = 3;
+
     struct Commitment {
         address owner;
         bytes32 rulesHash;
+        uint256 stakeInitial;
         uint256 stakeRemaining;
         // slot: beneficiary (20) + startTimestamp (8) + durationDays (2) + slashBps (2)
         address beneficiary;
@@ -53,6 +60,11 @@ contract AccountabilityVault is ReentrancyGuard {
         uint16 streak;
         uint16 violations;
         bool active;
+        // Full daily history onchain: 2 bits per day, up to 90 days. Lets the
+        // frontend render the streak calendar from a single view call — the
+        // public Monad RPC caps eth_getLogs at 100 blocks, so event replay is
+        // not a viable data source.
+        uint192 dayStatuses;
     }
 
     // ---------------------------------------------------------------------
@@ -118,6 +130,7 @@ contract AccountabilityVault is ReentrancyGuard {
         _commitments[msg.sender] = Commitment({
             owner: msg.sender,
             rulesHash: rulesHash,
+            stakeInitial: msg.value,
             stakeRemaining: msg.value,
             beneficiary: beneficiary,
             startTimestamp: uint64(block.timestamp),
@@ -128,7 +141,8 @@ contract AccountabilityVault is ReentrancyGuard {
             lastReportedDay: startDay - 1,
             streak: 0,
             violations: 0,
-            active: true
+            active: true,
+            dayStatuses: 0
         });
 
         emit CommitmentCreated(msg.sender, msg.value, rulesHash, durationDays, slashBps, beneficiary);
@@ -154,10 +168,12 @@ contract AccountabilityVault is ReentrancyGuard {
             c.lastReportedDay = today;
             if (compliant) {
                 c.streak += 1;
+                _setDayStatus(c, today, STATUS_COMPLIANT);
                 emit DayReported(msg.sender, today, true, c.streak);
             } else {
                 c.streak = 0;
                 c.violations += 1;
+                _setDayStatus(c, today, STATUS_VIOLATED);
                 emit DayReported(msg.sender, today, false, 0);
                 slashed += _applySlash(c, today, SlashReason.SelfReported);
             }
@@ -191,9 +207,11 @@ contract AccountabilityVault is ReentrancyGuard {
 
         uint256 slashed = _settleMissedDays(c, _endDay(c));
 
+        // stakeRemaining is deliberately left intact after withdrawal: every
+        // payout path requires `active`, and the surviving value keeps the
+        // public history page meaningful once the commitment completes.
         uint256 remaining = c.stakeRemaining;
         if (remaining > 0) {
-            c.stakeRemaining = 0;
             c.active = false;
             emit Withdrawn(msg.sender, remaining);
         }
@@ -212,6 +230,18 @@ contract AccountabilityVault is ReentrancyGuard {
 
     function getCommitment(address trader) external view returns (Commitment memory) {
         return _commitments[trader];
+    }
+
+    /// @notice Per-day statuses for a trader's commitment, one entry per
+    ///         commitment day: 0 = unreported, 1 = compliant, 2 = violated,
+    ///         3 = missed. Decoded from the packed bitmap.
+    function getDayStatuses(address trader) external view returns (uint8[] memory statuses) {
+        Commitment storage c = _commitments[trader];
+        statuses = new uint8[](c.durationDays);
+        uint192 packed = c.dayStatuses;
+        for (uint256 i = 0; i < c.durationDays; i++) {
+            statuses[i] = uint8((packed >> (i * 2)) & 3);
+        }
     }
 
     /// @notice The current UTC day index (block.timestamp / 1 days).
@@ -246,9 +276,17 @@ contract AccountabilityVault is ReentrancyGuard {
             c.streak = 0;
             c.violations += 1;
             c.lastReportedDay = day;
+            _setDayStatus(c, day, STATUS_MISSED);
             totalSlashed += _applySlash(c, day, SlashReason.MissedDay);
             if (!c.active) break;
         }
+    }
+
+    /// @dev Records a day's outcome in the packed bitmap. Statuses only ever
+    ///      transition from 0 (unreported), so OR-ing is sufficient.
+    function _setDayStatus(Commitment storage c, uint32 day, uint192 status) private {
+        uint256 offset = day - uint256(c.startTimestamp) / 1 days;
+        c.dayStatuses |= status << (offset * 2);
     }
 
     /// @dev Deducts a slash from the remaining stake (state only, no transfer).
