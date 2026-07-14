@@ -1,0 +1,10 @@
+# design-sync notes — Vaultline
+
+- This is a Next.js APP, not a packaged library — synth-entry mode (no dist, no build script for a lib). Components live in `web/components/ui/` (shadcn, Tailwind v4).
+- `web` is the package dir; run the converter with `--node-modules web/node_modules`.
+- **CSS**: Tailwind v4 source (`app/globals.css`) can't be consumed directly — `cfg.cssEntry` points at `web/.ds-compiled.css`, a copy of the dev-compiled chunk `.next/dev/static/chunks/app_globals_css_*.single.css`. **Re-sync risk**: chunk filename hashes rotate and the copy goes stale whenever globals.css or the used-utilities set changes — with the dev server running (or after a fresh `next dev`/`build`), re-copy the newest `app_globals_css_*` chunk over `.ds-compiled.css` before rebuilding.
+- **Fonts**: Geist + Roboto Mono ship from Next's self-hosted google-font chunks under `.next/dev/static/chunks/` (relative `../media/*.woff2` resolve). **Re-sync risk**: same hash rotation as CSS — refresh the `extraFonts` paths from `ls web/.next/dev/static/chunks/ | grep font` if `[FONT_MISSING]`/`[FONT_DANGLING]` fires.
+- App components (SiteNav, WalletButton, CommitmentView) are deliberately excluded (`componentSrcMap: null`) — they require a live wagmi provider + Monad RPC and cannot render statically. User approved 2026-07-14.
+- Design system source of truth: `design.md` at repo root ("Night Desk"). Semantic tokens `--compliant`/`--violated`/`--accent-text` exist beyond stock shadcn vars.
+- The app forces dark mode via `class="dark"` on <html>; previews must wrap content in a `.dark` container (or set it on a root wrapper) or every token resolves to the unused light theme.
+- `.ds-compiled.css` carries a hand-applied `/* ds-sync appendix */`: the `.dark` token block mirrored onto `:root` (designs have no `.dark` class) + `--font-geist-sans`/`--font-roboto-mono` definitions (the app sets these via next/font on <html>, which designs don't have). **Re-sync: after re-copying the compiled chunk, re-run the append script** (see git history of this file / ask Claude to re-derive: extract `.dark{...}` → append as `:root{...}` + font vars + body colors).

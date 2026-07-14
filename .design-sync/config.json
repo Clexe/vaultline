@@ -1,0 +1,34 @@
+{
+  "projectId": "55217cb3-dbd9-4eb5-bfe7-4e84826f6619",
+  "shape": "package",
+  "pkg": "web",
+  "globalName": "Vaultline",
+  "tsconfig": "tsconfig.json",
+  "srcDir": "components",
+  "cssEntry": ".ds-compiled.css",
+  "componentSrcMap": {
+    "Button": "components/ui/button.tsx",
+    "Card": "components/ui/card.tsx",
+    "Checkbox": "components/ui/checkbox.tsx",
+    "Dialog": "components/ui/dialog.tsx",
+    "Input": "components/ui/input.tsx",
+    "Label": "components/ui/label.tsx",
+    "Separator": "components/ui/separator.tsx",
+    "Textarea": "components/ui/textarea.tsx",
+    "SiteNav": null,
+    "WalletButton": null,
+    "CommitmentView": null
+  },
+  "extraFonts": [
+    ".next/dev/static/chunks/[next]_internal_font_google_geist_a71539c9_module_css_1igg3k2._.single.css",
+    ".next/dev/static/chunks/[next]_internal_font_google_roboto_mono_498b4ed1_module_css_1igg3k2._.single.css",
+    ".next/dev/static/chunks/[next]_internal_font_google_roboto_mono_a48da9b6_module_css_1igg3k2._.single.css"
+  ],
+  "overrides": {
+    "Dialog": {
+      "cardMode": "single",
+      "viewport": "680x520"
+    }
+  },
+  "readmeHeader": ".design-sync/conventions.md"
+}

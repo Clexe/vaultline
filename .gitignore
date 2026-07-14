@@ -16,3 +16,12 @@ web/out/
 # OS
 .DS_Store
 Thumbs.db
+
+# design-sync machine state
+.ds-sync/
+ds-bundle/
+.design-sync/.cache/
+.design-sync/learnings/
+.design-sync/node_modules
+web/.ds-compiled.css
+web/.ds-entry.ts
