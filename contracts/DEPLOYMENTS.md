@@ -9,7 +9,7 @@
 | Deploy tx | `0x43fdfeb4ccab693f11380706cb704a88fd1fa6bc7845a520aa27379933a618e7` |
 | Deployer | `0xd617E8FAE84Cc261eE0965da5d1AFFcb79187F82` (`vaultline-deployer` keystore) |
 | Compiler | solc 0.8.28, EVM cancun, optimizer 200 runs |
-| Verification | Sourcify via https://sourcify-api-monad.blockvision.org/ (job submitted 2026-07-15; confirm at the URL below) |
+| Verification | Sourcify `exact_match` (creation + runtime), 2026-07-15, via https://sourcify-api-monad.blockvision.org/ |
 | Explorer | https://monadscan.com/address/0x79DDB2B718329457F24fF3Cb784dF66E47E07a3E |
 
 The frontend (`web/lib/vault.ts`, `web/lib/wagmi.ts`) points at this address on chain 143.
