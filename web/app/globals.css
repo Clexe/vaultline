@@ -15,7 +15,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-roboto-mono);
-  --font-heading: var(--font-roboto-mono);
+  --font-heading: var(--font-pixel);
   --color-compliant: var(--compliant);
   --color-violated: var(--violated);
   --color-accent-text: var(--accent-text);
@@ -117,8 +117,9 @@
   --compliant: oklch(0.65 0.13 155);
   --violated: oklch(0.55 0.19 25);
   --accent-text: oklch(0.75 0.16 285);
-  --glow-text: 0 0 14px oklch(0.557 0.213 284 / 0.6);
-  --glow-box: 0 0 18px oklch(0.557 0.213 284 / 0.35);
+  /* Layered phosphor: tight bright core + wide soft halo (rev 2.1). */
+  --glow-text: 0 0 6px oklch(0.62 0.22 284 / 0.9), 0 0 22px oklch(0.557 0.213 284 / 0.55);
+  --glow-box: 0 0 10px oklch(0.62 0.22 284 / 0.5), 0 0 26px oklch(0.557 0.213 284 / 0.35);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -144,10 +145,12 @@
   html {
     @apply font-sans;
   }
+  /* Pixel display face — bitmap faces need natural spacing, never negative
+     tracking (glyphs fuse into blobs). */
   h1,
   h2 {
     @apply font-heading font-bold;
-    letter-spacing: -0.02em;
+    letter-spacing: 0.02em;
   }
   /* Data never uses proportional figures. */
   main {
@@ -187,10 +190,33 @@
   }
   /* Phosphor glow — identity elements ONLY (wordmark, streak hero, primary
      CTA, today-ring). Token-driven; never applied to cards or panels. */
+  /* Panel titles carry the pixel display face too (CardTitle is a div,
+     outside the h1/h2 base rule). */
+  [data-slot="card-title"] {
+    font-family: var(--font-heading);
+    letter-spacing: 0.02em;
+  }
   .phosphor-text {
     text-shadow: var(--glow-text);
   }
   .phosphor-box {
     box-shadow: var(--glow-box);
+  }
+  /* CRT scanlines (rev 2.1) — static texture, 3% ink, sits with the bloom
+     behind all content. Disabled for reduced-motion users? No — it's static;
+     it stays. */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      oklch(0.94 0.015 290 / 0.03) 0px,
+      oklch(0.94 0.015 290 / 0.03) 1px,
+      transparent 1px,
+      transparent 4px
+    );
   }
 }

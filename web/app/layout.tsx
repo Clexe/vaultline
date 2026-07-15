@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Roboto_Mono } from "next/font/google";
+import { Geist, Roboto_Mono, Silkscreen } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import { SiteNav } from "@/components/site-nav";
@@ -9,12 +9,19 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-// Monad's brand technical font, doubling as the display face — the terminal
-// register IS the design (see design.md · Typography).
+// Monad's brand technical font — data, labels, hashes, buttons.
 const robotoMono = Roboto_Mono({
   variable: "--font-roboto-mono",
   subsets: ["latin"],
   weight: ["400", "500", "700"],
+});
+
+// Pixel display face (rev 2.1) — wordmark, headings, the streak hero. The
+// CRT register from the user's reference; data stays in Roboto Mono.
+const silkscreen = Silkscreen({
+  variable: "--font-pixel",
+  subsets: ["latin"],
+  weight: ["400", "700"],
 });
 
 export const metadata: Metadata = {
@@ -31,7 +38,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`dark ${geistSans.variable} ${robotoMono.variable} h-full antialiased`}
+      className={`dark ${geistSans.variable} ${robotoMono.variable} ${silkscreen.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <Providers>

@@ -175,9 +175,9 @@ export function CommitmentView({
       {/* Statement hero — public page only: the streak IS the story. */}
       {!interactive && (
         <div className="py-2">
-          <p className="font-mono text-[clamp(3.5rem,10vw,5.5rem)] font-bold leading-none tracking-[-0.02em]">
+          <p className="font-heading text-[clamp(3rem,9vw,5rem)] font-bold leading-none">
             <span className="phosphor-text">{commitment.streak}</span>
-            <span className="ml-3 text-lg font-medium tracking-[0.08em] text-muted-foreground">
+            <span className="ml-3 font-mono text-lg font-medium tracking-[0.08em] text-muted-foreground">
               day streak
             </span>
           </p>

@@ -20,7 +20,7 @@ export function SiteNav() {
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between rounded-full border border-border/70 bg-card/60 px-4 backdrop-blur sm:px-6">
         <Link
           href="/"
-          className="phosphor-text font-mono text-sm font-bold uppercase tracking-[0.1em] sm:tracking-[0.25em]"
+          className="phosphor-text font-heading text-base font-bold uppercase tracking-[0.05em] sm:tracking-[0.12em]"
         >
           <span aria-hidden className="mr-1.5 text-primary">▮</span>
           Vaultline
