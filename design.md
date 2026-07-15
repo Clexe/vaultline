@@ -9,6 +9,11 @@ Axes: dark / mono / cool (Monad purple ~284°)
 Revision 2 (2026-07-14, user reference image): darker near-black canvas, phosphor
 glow on identity elements only, filled purple pill CTAs, floating pill nav,
 `> ` prompt-prefix copy voice. Structure unchanged.
+Revision 2.1 (2026-07-14, "still looks the same"): commit fully to CRT —
+Silkscreen pixel display face (wordmark, h1/h2, panel titles, streak hero;
++0.02em tracking, never negative), layered glow (bright core + wide halo),
+static scanline texture. Three faces now: Silkscreen display · Geist body ·
+Roboto Mono data — the 2+1 ceiling, deliberately.
 
 ## Genre
 
