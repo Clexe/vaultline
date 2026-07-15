@@ -22,7 +22,8 @@
   "extraFonts": [
     ".next/dev/static/chunks/[next]_internal_font_google_geist_a71539c9_module_css_1igg3k2._.single.css",
     ".next/dev/static/chunks/[next]_internal_font_google_roboto_mono_498b4ed1_module_css_1igg3k2._.single.css",
-    ".next/dev/static/chunks/[next]_internal_font_google_roboto_mono_a48da9b6_module_css_1igg3k2._.single.css"
+    ".next/dev/static/chunks/[next]_internal_font_google_roboto_mono_a48da9b6_module_css_1igg3k2._.single.css",
+    ".next/dev/static/chunks/[next]_internal_font_google_silkscreen_ed5abf87_module_css_1igg3k2._.single.css"
   ],
   "overrides": {
     "Dialog": {
