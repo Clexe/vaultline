@@ -116,7 +116,7 @@ export function CommitmentView({
     return (
       <div className="space-y-4 py-16 text-center">
         <p className="text-sm text-destructive">
-          Couldn&apos;t reach the Monad testnet RPC. The chain state shown here may be
+          Couldn&apos;t reach the Monad RPC. The chain state shown here may be
           unavailable right now.
         </p>
         <Button size="sm" variant="outline" onClick={() => refetch()}>
@@ -290,7 +290,7 @@ export function CommitmentView({
                 className="w-full"
                 onClick={() => switchChain({ chainId: CHAIN.id })}
               >
-                Wrong network — switch to Monad Testnet
+                Wrong network — switch to Monad
               </Button>
             )}
             {!wrongChain && canReport && (

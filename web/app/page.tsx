@@ -345,7 +345,7 @@ export default function CreatePage() {
             {!isConnected
               ? "Connect wallet to commit"
               : chainId !== CHAIN.id
-                ? "Switch to Monad Testnet"
+                ? "Switch to Monad"
                 : hasActive
                   ? "Commitment already active"
                   : isPending

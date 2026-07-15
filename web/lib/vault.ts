@@ -1,9 +1,9 @@
-import { monadTestnet } from "wagmi/chains";
+import { monad } from "wagmi/chains";
 import { vaultAbi } from "./vault-abi";
 
-export const VAULT_ADDRESS = "0xe256867D01eE907c13b1cD60E42d60fA7f9268AB" as const;
+export const VAULT_ADDRESS = "0x79DDB2B718329457F24fF3Cb784dF66E47E07a3E" as const;
 export const BURN_ADDRESS = "0x000000000000000000000000000000000000dEaD" as const;
-export const CHAIN = monadTestnet;
+export const CHAIN = monad;
 
 export const vaultContract = {
   address: VAULT_ADDRESS,

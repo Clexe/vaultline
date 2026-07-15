@@ -44,8 +44,10 @@ web/                 Next.js App Router + wagmi/viem + shadcn
 
 | Network | Chain ID | Address |
 |---|---|---|
+| **Monad Mainnet** (live) | 143 | [`0x79DDB2B718329457F24fF3Cb784dF66E47E07a3E`](https://monadscan.com/address/0x79DDB2B718329457F24fF3Cb784dF66E47E07a3E) — the frontend points here |
 | Monad Testnet | 10143 | [`0xe256867D01eE907c13b1cD60E42d60fA7f9268AB`](https://testnet.monadscan.com/address/0xe256867D01eE907c13b1cD60E42d60fA7f9268AB) — Sourcify `exact_match` |
-| Monad Mainnet | 143 | _Day-4 deploy — see [contracts/DEPLOYMENTS.md](contracts/DEPLOYMENTS.md)_ |
+
+See [contracts/DEPLOYMENTS.md](contracts/DEPLOYMENTS.md) for tx hashes, deployers, and verification.
 
 ## Run locally
 

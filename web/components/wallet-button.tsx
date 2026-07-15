@@ -49,7 +49,7 @@ export function WalletButton() {
         className="rounded-full font-mono text-xs uppercase tracking-[0.08em]"
         onClick={() => switchChain({ chainId: CHAIN.id })}
       >
-        Switch to Monad Testnet
+        Switch to Monad
       </Button>
     );
   }
