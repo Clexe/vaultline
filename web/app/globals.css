@@ -93,29 +93,32 @@
 }
 
 .dark {
-  /* Night Desk — see design.md. All OKLCH, purple-anchored (Monad brand:
-     navy #0E091C = paper, purple #6E54FF = accent, kept to ≤5% of any view). */
-  --background: oklch(0.155 0.045 290);
+  /* Night Desk rev 2 (phosphor) — see design.md. All OKLCH, purple-anchored.
+     Near-black canvas, brand purple #6E54FF as accent (≤5% of any view),
+     glow reserved for identity elements via the --glow-* tokens. */
+  --background: oklch(0.13 0.035 293);
   --foreground: oklch(0.94 0.015 290);
-  --card: oklch(0.19 0.045 290);
+  --card: oklch(0.165 0.04 293);
   --card-foreground: oklch(0.94 0.015 290);
-  --popover: oklch(0.21 0.045 290);
+  --popover: oklch(0.185 0.04 293);
   --popover-foreground: oklch(0.94 0.015 290);
   --primary: oklch(0.557 0.213 284);
   --primary-foreground: oklch(0.97 0.01 290);
-  --secondary: oklch(0.23 0.045 290);
+  --secondary: oklch(0.21 0.045 292);
   --secondary-foreground: oklch(0.86 0.02 290);
-  --muted: oklch(0.21 0.04 290);
+  --muted: oklch(0.19 0.04 292);
   --muted-foreground: oklch(0.68 0.03 290);
-  --accent: oklch(0.23 0.05 288);
+  --accent: oklch(0.21 0.05 290);
   --accent-foreground: oklch(0.86 0.02 290);
   --destructive: oklch(0.55 0.19 25);
-  --border: oklch(0.3 0.05 290);
-  --input: oklch(0.33 0.05 290);
+  --border: oklch(0.29 0.055 291);
+  --input: oklch(0.32 0.055 291);
   --ring: oklch(0.557 0.213 284);
   --compliant: oklch(0.65 0.13 155);
   --violated: oklch(0.55 0.19 25);
-  --accent-text: oklch(0.72 0.15 285);
+  --accent-text: oklch(0.75 0.16 285);
+  --glow-text: 0 0 14px oklch(0.557 0.213 284 / 0.6);
+  --glow-box: 0 0 18px oklch(0.557 0.213 284 / 0.35);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -181,5 +184,13 @@
       oklch(0.557 0.213 284 / 0.08),
       transparent 72%
     );
+  }
+  /* Phosphor glow — identity elements ONLY (wordmark, streak hero, primary
+     CTA, today-ring). Token-driven; never applied to cards or panels. */
+  .phosphor-text {
+    text-shadow: var(--glow-text);
+  }
+  .phosphor-box {
+    box-shadow: var(--glow-box);
   }
 }

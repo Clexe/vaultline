@@ -39,6 +39,7 @@ export default function RootLayout({
           <main className="relative mx-auto w-full max-w-5xl flex-1 px-4 py-8">{children}</main>
           <footer className="py-6">
             <p className="mx-auto max-w-5xl px-4 font-mono text-xs tracking-[0.08em] text-muted-foreground">
+              <span aria-hidden className="text-accent-text">&gt; </span>
               vaultline · self-reported by design · your word, your stake
             </p>
           </footer>

@@ -10,17 +10,17 @@ const links = [
   { href: "/dashboard", label: "desk" },
 ];
 
-/* N9 edge-aligned minimal — the nav disappears into the canvas; no hairline,
-   no centered link row. Wordmark hard left, everything else hard right. */
+/* Floating pill nav (rev 2) — rounded container over the canvas, glowing
+   wordmark; links stay edge-aligned right, mono uppercase. */
 export function SiteNav() {
   const pathname = usePathname();
 
   return (
-    <header>
-      <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-3 sm:px-4">
+    <header className="pt-4">
+      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between rounded-full border border-border/70 bg-card/60 px-4 backdrop-blur sm:px-6">
         <Link
           href="/"
-          className="font-mono text-sm font-bold uppercase tracking-[0.1em] sm:tracking-[0.25em]"
+          className="phosphor-text font-mono text-sm font-bold uppercase tracking-[0.1em] sm:tracking-[0.25em]"
         >
           <span aria-hidden className="mr-1.5 text-primary">▮</span>
           Vaultline

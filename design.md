@@ -4,8 +4,11 @@ A locked design system for this app. Every page redesign reads this file before
 emitting code. Do not regenerate per page — extend or amend this file when the
 system needs to grow.
 
-Route: custom (tuned) · vibe: "late-night trading terminal, Monad-native, austere"
+Route: custom (tuned) · vibe: "phosphor terminal, Monad-native, late-night austere"
 Axes: dark / mono / cool (Monad purple ~284°)
+Revision 2 (2026-07-14, user reference image): darker near-black canvas, phosphor
+glow on identity elements only, filled purple pill CTAs, floating pill nav,
+`> ` prompt-prefix copy voice. Structure unchanged.
 
 ## Genre
 
@@ -25,9 +28,9 @@ elevated panels instead of hairline-on-paper, fade-in-only motion.
 All colours OKLCH, everything tinted toward the Monad purple anchor (~284–290°).
 Brand sources: monad.xyz/brand-and-media-kit (#0E091C navy, #6E54FF purple).
 
-- `--color-paper`      oklch(15.5% 0.045 290)  — exact brand navy
-- `--color-paper-2`    oklch(19%   0.045 290)  — elevated panel
-- `--color-paper-3`    oklch(23%   0.045 290)  — highest elevation (popover/input)
+- `--color-paper`      oklch(13%   0.035 293)  — near-black, purple-tinted (rev 2)
+- `--color-paper-2`    oklch(16.5% 0.04  293)  — elevated panel
+- `--color-paper-3`    oklch(20%   0.04  293)  — highest elevation (popover/input)
 - `--color-ink`        oklch(94%   0.015 290)
 - `--color-ink-2`      oklch(86%   0.02  290)
 - `--color-muted`      oklch(68%   0.03  290)
@@ -70,12 +73,25 @@ never every section padded the same.
 - Silent success where the result is visible; status lines for tx lifecycle.
 - No celebratory toasts. No hover-scale. One signal per element.
 
-## CTA voice
+## CTA voice (rev 2)
 
-- Primary CTA: accent border + accent-text label, transparent fill, mono
-  uppercase tracking-wide. Fills are for semantic actions only.
-- Semantic actions: compliant (green) / violated (red) filled, dark ink text.
+- Primary CTA: FILLED brand-purple pill (`rounded-full`), mono uppercase
+  tracking-wide, subtle phosphor glow. One per view.
+- Secondary CTA: outlined pill, accent-text label.
+- Semantic actions: compliant (green) / violated (red) filled pills, dark ink text.
 - Destructive confirms: dialog with exact cost stated in MON.
+
+## Phosphor glow (rev 2)
+
+Glow lives on IDENTITY elements only: the wordmark, the public streak hero,
+the primary CTA, and the calendar today-ring. Defined as tokens
+(`--glow-text`, `--glow-box`) — never inline shadows, never on cards or
+panels (elevation stays lightness-based).
+
+## Copy voice (rev 2)
+
+Taglines and section descriptions may carry a `> ` terminal-prompt prefix.
+Cap: one per view region. Body copy inside panels stays plain.
 
 ## What pages MUST share
 

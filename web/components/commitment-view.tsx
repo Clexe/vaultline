@@ -176,7 +176,7 @@ export function CommitmentView({
       {!interactive && (
         <div className="py-2">
           <p className="font-mono text-[clamp(3.5rem,10vw,5.5rem)] font-bold leading-none tracking-[-0.02em]">
-            {commitment.streak}
+            <span className="phosphor-text">{commitment.streak}</span>
             <span className="ml-3 text-lg font-medium tracking-[0.08em] text-muted-foreground">
               day streak
             </span>
@@ -245,7 +245,7 @@ export function CommitmentView({
                     unsettledMiss && "border border-violated/70 text-violated",
                     isFuture && "bg-muted/40 text-muted-foreground",
                     isToday && status === DayStatus.Unreported && "bg-muted/60",
-                    isToday && "ring-2 ring-primary"
+                    isToday && "phosphor-box ring-2 ring-primary"
                   )}
                 >
                   {i + 1}
@@ -296,14 +296,14 @@ export function CommitmentView({
             {!wrongChain && canReport && (
               <div className="flex flex-col gap-3 sm:flex-row">
                 <Button
-                  className="flex-1 bg-compliant font-mono text-xs uppercase tracking-[0.1em] text-background hover:bg-compliant/85"
+                  className="flex-1 rounded-full bg-compliant font-mono text-xs uppercase tracking-[0.1em] text-background hover:bg-compliant/85"
                   disabled={isPending || isConfirming}
                   onClick={() => send("reportDay", [true])}
                 >
                   Compliant — rules held
                 </Button>
                 <Button
-                  className="flex-1 bg-violated font-mono text-xs uppercase tracking-[0.1em] text-background hover:bg-violated/85"
+                  className="flex-1 rounded-full bg-violated font-mono text-xs uppercase tracking-[0.1em] text-background hover:bg-violated/85"
                   disabled={isPending || isConfirming}
                   onClick={() => setViolateOpen(true)}
                 >
@@ -314,8 +314,7 @@ export function CommitmentView({
 
             {!wrongChain && canWithdraw && (
               <Button
-                variant="outline"
-                className="w-full border-primary font-mono text-xs uppercase tracking-[0.1em] text-accent-text hover:bg-primary/10"
+                className="phosphor-box w-full rounded-full bg-primary font-mono text-xs uppercase tracking-[0.1em] text-primary-foreground hover:bg-primary/90"
                 size="lg"
                 disabled={isPending || isConfirming}
                 onClick={() => send("withdraw")}

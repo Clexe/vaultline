@@ -142,10 +142,11 @@ export default function CreatePage() {
     <div className="mx-auto max-w-2xl space-y-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Commit to your rules</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Stake MON against a hashed copy of your trading rules. Every UTC day you report:
-          clean days build the streak, violations and silence burn stake. No oracle — only
-          your word, with consequences.
+        <p className="mt-1 font-mono text-sm text-muted-foreground">
+          <span aria-hidden className="text-accent-text">&gt; </span>
+          Stake MON against a hashed copy of your trading rules. Clean days build the
+          streak, violations and silence burn stake. No oracle — only your word, with
+          consequences.
         </p>
       </div>
 
@@ -336,8 +337,7 @@ export default function CreatePage() {
           )}
 
           <Button
-            variant="outline"
-            className="w-full border-primary font-mono text-xs uppercase tracking-[0.1em] text-accent-text hover:bg-primary/10"
+            className="phosphor-box w-full rounded-full bg-primary font-mono text-xs uppercase tracking-[0.1em] text-primary-foreground hover:bg-primary/90"
             size="lg"
             disabled={!isConnected || chainId !== CHAIN.id || hasActive || !inputsValid || isPending || isConfirming}
             onClick={submit}

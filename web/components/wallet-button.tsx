@@ -23,6 +23,7 @@ export function WalletButton() {
         )}
         <Button
           size="sm"
+          className="rounded-full font-mono text-xs uppercase tracking-[0.08em]"
           title={noProvider ? "No wallet extension found" : undefined}
           onClick={() => connect({ connector: connectors[0] })}
           disabled={isPending || connectors.length === 0}
@@ -42,14 +43,19 @@ export function WalletButton() {
 
   if (chainId !== CHAIN.id) {
     return (
-      <Button size="sm" variant="destructive" onClick={() => switchChain({ chainId: CHAIN.id })}>
+      <Button
+        size="sm"
+        variant="destructive"
+        className="rounded-full font-mono text-xs uppercase tracking-[0.08em]"
+        onClick={() => switchChain({ chainId: CHAIN.id })}
+      >
         Switch to Monad Testnet
       </Button>
     );
   }
 
   return (
-    <Button size="sm" variant="outline" onClick={() => disconnect()} className="font-mono">
+    <Button size="sm" variant="outline" onClick={() => disconnect()} className="rounded-full font-mono">
       {shortAddress(address!)}
     </Button>
   );
